@@ -24,7 +24,7 @@ public class ConfigHandler {
     @SubscribeEvent
     public void onConfigChange (ConfigChangedEvent.OnConfigChangedEvent event) {
         
-        if (event.modID.equals("friendlyfire"))
+        if (event.getModID().equals("friendlyfire"))
             this.syncConfigData();
     }
     

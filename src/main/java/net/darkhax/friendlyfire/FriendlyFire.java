@@ -11,7 +11,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod(modid = "friendlyfire", name = "Friendly Fire", version = "1.1.0", acceptableRemoteVersions = "*")
+@Mod(modid = "friendlyfire", name = "Friendly Fire", version = "1.3.0", acceptableRemoteVersions = "*")
 public class FriendlyFire {
     
     @EventHandler
@@ -22,12 +22,12 @@ public class FriendlyFire {
     }
     
     @SubscribeEvent
-    public void onMobHit(LivingHurtEvent event) {
+    public void onMobHit (LivingHurtEvent event) {
         
-        if (event.entityLiving != null && event.source != null && event.source.getEntity() != null) {
+        if (event.getEntityLiving() != null && event.getSource() != null && event.getSource().getEntity() != null) {
             
-            final EntityLivingBase living = event.entityLiving;
-            final Entity source = event.source.getEntity();
+            final EntityLivingBase living = event.getEntityLiving();
+            final Entity source = event.getSource().getEntity();
             
             if (ConfigHandler.protectPets && living instanceof IEntityOwnable) {
                 
