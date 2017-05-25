@@ -1,14 +1,14 @@
 [
 {
-  "modid": "examplemod",
-  "name": "Example Mod",
-  "description": "Example placeholder mod.",
+  "modid": "friendlyfire",
+  "name": "Friendly Fire",
+  "description": "Stop hurting your friends :'(",
   "version": "${version}",
   "mcversion": "${mcversion}",
   "url": "",
   "updateUrl": "",
-  "authorList": ["ExampleDude"],
-  "credits": "The Forge and FML guys, for making this example",
+  "authorList": ["Darkhax"],
+  "credits": "All the dead pets.",
   "logoFile": "",
   "screenshots": [],
   "dependencies": []
