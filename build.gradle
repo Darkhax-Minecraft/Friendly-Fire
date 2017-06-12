@@ -11,19 +11,20 @@ buildscript {
         
         maven {
 
-            url "https://plugins.gradle.org/m2/"
+            url 'https://plugins.gradle.org/m2/'
         }
     }
     
     dependencies {
     
         classpath 'net.minecraftforge.gradle:ForgeGradle:2.2-SNAPSHOT'
-        classpath "gradle.plugin.com.matthewprenger:CurseGradle:1.0.8"
+        classpath 'gradle.plugin.com.matthewprenger:CurseGradle:1.0.8'
     }
 }
 
+apply plugin: 'maven'
 apply plugin: 'net.minecraftforge.gradle.forge'
-apply plugin: "com.matthewprenger.cursegradle"
+apply plugin: 'com.matthewprenger.cursegradle'
 
 version = "${mod_version}" + getBuildNumber()
 group = "${mod_group}"
@@ -124,6 +125,17 @@ task createJavadoc(type: Jar, dependsOn: javadoc) {
 
     from javadoc.destinationDir
     classifier = 'javadoc'
+}
+
+uploadArchives {
+
+    repositories {
+
+        mavenDeployer {
+
+            repository(url: "file:///var/www/html/maven")
+        }
+    }
 }
 
 curseforge {

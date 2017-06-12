@@ -24,10 +24,10 @@ public class FriendlyFire {
     @SubscribeEvent
     public void onMobHit (LivingHurtEvent event) {
 
-        if (event.getEntityLiving() != null && event.getSource() != null && event.getSource().getEntity() != null) {
+        if (event.getEntityLiving() != null && event.getSource() != null && event.getSource().getTrueSource() != null) {
 
             final EntityLivingBase living = event.getEntityLiving();
-            final Entity source = event.getSource().getEntity();
+            final Entity source = event.getSource().getTrueSource();
 
             if (living instanceof IEntityOwnable) {
 
