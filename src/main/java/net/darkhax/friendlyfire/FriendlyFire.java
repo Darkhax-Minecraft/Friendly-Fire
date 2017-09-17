@@ -1,5 +1,8 @@
 package net.darkhax.friendlyfire;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
@@ -8,12 +11,15 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@Mod(modid = "friendlyfire", name = "Friendly Fire", version = "@VERSION@", acceptableRemoteVersions = "*")
+@Mod(modid = "friendlyfire", name = "Friendly Fire", version = "@VERSION@", acceptableRemoteVersions = "*", certificateFingerprint = "@FINGERPRINT@")
 public class FriendlyFire {
 
+    private static final Logger LOG = LogManager.getLogger("Friendly Fire");
+    
     @EventHandler
     public void init (FMLPreInitializationEvent event) {
 
@@ -60,5 +66,11 @@ public class FriendlyFire {
                 event.setCanceled(true);
             }
         }
+    }
+    
+    @EventHandler
+    public void onFingerprintViolation (FMLFingerprintViolationEvent event) {
+
+        LOG.error("Invalid fingerprint detected! The file " + event.getSource().getName() + " may have been tampered with. This version will NOT be supported by the author!");
     }
 }
