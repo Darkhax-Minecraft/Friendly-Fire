@@ -1,54 +1,61 @@
 package net.darkhax.friendlyfire;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.IEntityOwnable;
+import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLFingerprintViolationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.config.ModConfig.Type;
 
-@Mod(modid = "friendlyfire", name = "Friendly Fire", version = "@VERSION@", acceptableRemoteVersions = "*", certificateFingerprint = "@FINGERPRINT@")
+@Mod("friendlyfire")
 public class FriendlyFire {
-
-    private static final Logger LOG = LogManager.getLogger("Friendly Fire");
     
-    @EventHandler
-    public void init (FMLPreInitializationEvent event) {
+	private Configuration configuration = new Configuration();
+	
+    public FriendlyFire() {
 
-        MinecraftForge.EVENT_BUS.register(this);
-        new ConfigHandler(event.getSuggestedConfigurationFile());
+    	MinecraftForge.EVENT_BUS.addListener(this::onEntityHurt);
+    	ModLoadingContext.get().registerConfig(Type.COMMON, configuration.getSpec());
     }
 
-    @SubscribeEvent
-    public void onMobHit (LivingHurtEvent event) {
+    private void onEntityHurt (LivingHurtEvent event) {
 
+    	System.out.println("ok");
         if (event.getEntityLiving() != null && event.getSource() != null && event.getSource().getTrueSource() != null) {
 
             final EntityLivingBase living = event.getEntityLiving();
             final Entity source = event.getSource().getTrueSource();
 
+            // Check if the entity can be owned by the player
             if (living instanceof IEntityOwnable) {
 
-                if (ConfigHandler.protectPets) {
+            	// Checks if pets should be protected from players
+                if (configuration.shouldProtectPetsFromOwners()) {
 
                     final Entity owner = ((IEntityOwnable) living).getOwner();
-
+                    
+                    // Check if it is the owner dealing the damage, and the owner is not sneaking.
                     if (owner != null && owner.getUniqueID().equals(source.getUniqueID()) && !source.isSneaking()) {
-
+                        
+                    	// If reflection is set to true, the player will be damaged when attacking their pets.
+                    	if (configuration.shouldReflectDamage()) {
+                    		
+                    		owner.attackEntityFrom(DamageSource.GENERIC, event.getAmount());
+                    	}
+                    	
                         event.setCanceled(true);
+                        event.setAmount(0);
+                        System.out.println("canceled");
                         return;
                     }
                 }
 
-                else if (ConfigHandler.protectPetsFromPets && source instanceof IEntityOwnable) {
+                // Check if pets should be protected from pets with the same owner.
+                else if (configuration.shouldProtectPetsFromPets() && source instanceof IEntityOwnable) {
 
                     final boolean sameOwner = ((IEntityOwnable) living).getOwnerId().equals(((IEntityOwnable) source).getOwnerId());
 
@@ -57,20 +64,18 @@ public class FriendlyFire {
                         living.setRevengeTarget(null);
                         ((EntityLivingBase) source).setRevengeTarget(null);
                         event.setCanceled(true);
+                        event.setAmount(0);
                         return;
                     }
                 }
             }
 
-            if (ConfigHandler.protectBabies && living instanceof EntityAgeable && ((EntityAgeable) living).isChild() && !source.isSneaking()) {
+            // Check if child mobs can be killed.
+            if (configuration.shouldProtectChildren() && living instanceof EntityAgeable && ((EntityAgeable) living).isChild() && !source.isSneaking()) {
+            	
                 event.setCanceled(true);
+                event.setAmount(0);
             }
         }
-    }
-    
-    @EventHandler
-    public void onFingerprintViolation (FMLFingerprintViolationEvent event) {
-
-        LOG.error("Invalid fingerprint detected! The file " + event.getSource().getName() + " may have been tampered with. This version will NOT be supported by the author!");
     }
 }
