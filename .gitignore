@@ -1,14 +1,20 @@
-.gradle
-build/
-run/
-out/
-
+#IntelliJ IDEA
+*.class
 *.iml
 *.ipr
 *.iws
-# Ignore Gradle GUI config
-gradle-app.setting
+*.launch
+out/
 
-# Avoid ignoring Gradle wrapper jar file (.jar files are usually ignored)
-!gradle-wrapper.jar
+#ForgeGradle
+build/
+.gradle/
+run/
+
+#Eclipse
+.classpath
+.metadata/
+.project
+.settings/
 /bin/
+/.idea/
