@@ -1,9 +1,9 @@
 package net.darkhax.friendlyfire;
 
+import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.IEntityOwnable;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -24,19 +24,18 @@ public class FriendlyFire {
 
     private void onEntityHurt (LivingHurtEvent event) {
 
-    	System.out.println("ok");
         if (event.getEntityLiving() != null && event.getSource() != null && event.getSource().getTrueSource() != null) {
 
-            final EntityLivingBase living = event.getEntityLiving();
+            final LivingEntity living = event.getEntityLiving();
             final Entity source = event.getSource().getTrueSource();
-
+            
             // Check if the entity can be owned by the player
-            if (living instanceof IEntityOwnable) {
+            if (living instanceof TameableEntity) {
 
             	// Checks if pets should be protected from players
                 if (configuration.shouldProtectPetsFromOwners()) {
 
-                    final Entity owner = ((IEntityOwnable) living).getOwner();
+                    final Entity owner = ((TameableEntity) living).getOwner();
                     
                     // Check if it is the owner dealing the damage, and the owner is not sneaking.
                     if (owner != null && owner.getUniqueID().equals(source.getUniqueID()) && !source.isSneaking()) {
@@ -49,20 +48,19 @@ public class FriendlyFire {
                     	
                         event.setCanceled(true);
                         event.setAmount(0);
-                        System.out.println("canceled");
                         return;
                     }
                 }
 
                 // Check if pets should be protected from pets with the same owner.
-                else if (configuration.shouldProtectPetsFromPets() && source instanceof IEntityOwnable) {
+                else if (configuration.shouldProtectPetsFromPets() && source instanceof TameableEntity) {
 
-                    final boolean sameOwner = ((IEntityOwnable) living).getOwnerId().equals(((IEntityOwnable) source).getOwnerId());
+                    final boolean sameOwner = ((TameableEntity) living).getOwnerId().equals(((TameableEntity) source).getOwnerId());
 
                     if (sameOwner) {
 
                         living.setRevengeTarget(null);
-                        ((EntityLivingBase) source).setRevengeTarget(null);
+                        ((LivingEntity) source).setRevengeTarget(null);
                         event.setCanceled(true);
                         event.setAmount(0);
                         return;
@@ -71,7 +69,7 @@ public class FriendlyFire {
             }
 
             // Check if child mobs can be killed.
-            if (configuration.shouldProtectChildren() && living instanceof EntityAgeable && ((EntityAgeable) living).isChild() && !source.isSneaking()) {
+            if (configuration.shouldProtectChildren() && living instanceof AgeableEntity && ((AgeableEntity) living).isChild() && !source.isSneaking()) {
             	
                 event.setCanceled(true);
                 event.setAmount(0);
