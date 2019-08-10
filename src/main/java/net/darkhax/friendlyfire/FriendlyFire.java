@@ -24,7 +24,6 @@ public class FriendlyFire {
 
     private void onEntityHurt (LivingHurtEvent event) {
 
-    	System.out.println("ok");
         if (event.getEntityLiving() != null && event.getSource() != null && event.getSource().getTrueSource() != null) {
 
             final EntityLivingBase living = event.getEntityLiving();
@@ -49,7 +48,6 @@ public class FriendlyFire {
                     	
                         event.setCanceled(true);
                         event.setAmount(0);
-                        System.out.println("canceled");
                         return;
                     }
                 }
