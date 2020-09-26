@@ -73,7 +73,7 @@ public class FriendlyFire {
                 final Entity owner = ((TameableEntity) living).getOwner();
                 
                 // Check if it is the owner dealing the damage, and the owner is not sneaking.
-                if (owner != null && owner.getUniqueID().equals(source.getUniqueID()) && !source.isShiftKeyDown()) {
+                if (owner != null && owner.getUniqueID().equals(source.getUniqueID()) && !source.isSneaking()) {
                     
                 	// If reflection is set to true, the player will be damaged when attacking their pets.
                 	if (configuration.shouldReflectDamage()) {
@@ -98,7 +98,7 @@ public class FriendlyFire {
         }
 
         // Check if child mobs can be killed.
-        if (configuration.shouldProtectChildren() && living instanceof AgeableEntity && ((AgeableEntity) living).isChild() && !source.isShiftKeyDown()) {
+        if (configuration.shouldProtectChildren() && living instanceof AgeableEntity && ((AgeableEntity) living).isChild() && !source.isSneaking()) {
 
         	return true;
         }
