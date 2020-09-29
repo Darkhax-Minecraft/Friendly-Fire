@@ -64,6 +64,12 @@ public class FriendlyFire {
     
     private final boolean preventAttack(Entity living, Entity source, float amount) {
     	
+    	// filter out null exceptions.
+    	if (living == null || source == null) {
+    		
+    		return false;
+    	}
+    	
         // Check if the entity can be owned by the player
         if (living instanceof TameableEntity) {
 
