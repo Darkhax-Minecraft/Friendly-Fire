@@ -1,5 +1,7 @@
 package net.darkhax.friendlyfire;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -8,9 +10,11 @@ import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.fml.ExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
+import net.minecraftforge.fml.network.FMLNetworkConstants;
 
 @Mod("friendlyfire")
 public class FriendlyFire {
@@ -19,6 +23,7 @@ public class FriendlyFire {
 	
     public FriendlyFire() {
 
+    	ModLoadingContext.get().registerExtensionPoint(ExtensionPoint.DISPLAYTEST, () -> Pair.of(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
     	MinecraftForge.EVENT_BUS.addListener(this::onEntityAttack);
     	MinecraftForge.EVENT_BUS.addListener(this::onEntityHurt);
     	ModLoadingContext.get().registerConfig(Type.COMMON, configuration.getSpec());
