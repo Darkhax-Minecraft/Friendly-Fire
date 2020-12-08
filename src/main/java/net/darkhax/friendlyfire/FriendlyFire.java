@@ -15,94 +15,102 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 @Mod("friendlyfire")
 public class FriendlyFire {
     
-	private Configuration configuration = new Configuration();
-	
+    private final Configuration configuration = new Configuration();
+    
     public FriendlyFire() {
-
-    	MinecraftForge.EVENT_BUS.addListener(this::onEntityAttack);
-    	MinecraftForge.EVENT_BUS.addListener(this::onEntityHurt);
-    	ModLoadingContext.get().registerConfig(Type.COMMON, configuration.getSpec());
+        
+        MinecraftForge.EVENT_BUS.addListener(this::onEntityAttack);
+        MinecraftForge.EVENT_BUS.addListener(this::onEntityHurt);
+        ModLoadingContext.get().registerConfig(Type.COMMON, this.configuration.getSpec());
     }
     
     private final void onEntityAttack (LivingAttackEvent event) {
-    	
-    	if (preventAttack(event.getEntityLiving(), event.getSource(), event.getAmount())) {
-    		
-    		event.setCanceled(true);
-    		event.getEntityLiving().setRevengeTarget(null);
-    		
-    		final Entity trueSource = event.getSource().getTrueSource();
-    		
-    		if (trueSource instanceof LivingEntity) {
-    			
-    			((LivingEntity) trueSource).setRevengeTarget(null);
-    		}
-    	}
+        
+        if (this.preventAttack(event.getEntityLiving(), event.getSource(), event.getAmount())) {
+            
+            event.setCanceled(true);
+            event.getEntityLiving().setRevengeTarget(null);
+            
+            final Entity trueSource = event.getSource().getTrueSource();
+            
+            if (trueSource instanceof LivingEntity) {
+                
+                ((LivingEntity) trueSource).setRevengeTarget(null);
+            }
+        }
     }
     
     private final void onEntityHurt (LivingHurtEvent event) {
-
-    	if (preventAttack(event.getEntityLiving(), event.getSource(), event.getAmount())) {
-    		
-    		event.setCanceled(true);
-    		event.setAmount(0f);
-    		event.getEntityLiving().setRevengeTarget(null);
-    		
-    		final Entity trueSource = event.getSource().getTrueSource();
-    		
-    		if (trueSource instanceof LivingEntity) {
-    			
-    			((LivingEntity) trueSource).setRevengeTarget(null);
-    		}
-    	}
+        
+        if (this.preventAttack(event.getEntityLiving(), event.getSource(), event.getAmount())) {
+            
+            event.setCanceled(true);
+            event.setAmount(0f);
+            event.getEntityLiving().setRevengeTarget(null);
+            
+            final Entity trueSource = event.getSource().getTrueSource();
+            
+            if (trueSource instanceof LivingEntity) {
+                
+                ((LivingEntity) trueSource).setRevengeTarget(null);
+            }
+        }
     }
     
-    private final boolean preventAttack(Entity living, DamageSource source, float amount) {
-    	
-    	return source != null ? preventAttack(living, source.getTrueSource(), amount) : false;
+    private final boolean preventAttack (Entity living, DamageSource source, float amount) {
+        
+        return source != null ? this.preventAttack(living, source.getTrueSource(), amount) : false;
     }
     
-    private final boolean preventAttack(Entity living, Entity source, float amount) {
-    	
+    private final boolean preventAttack (Entity living, Entity source, float amount) {
+        
+        // filter out null exceptions.
+        if (living == null || source == null) {
+            
+            return false;
+        }
+        
         // Check if the entity can be owned by the player
         if (living instanceof TameableEntity) {
-
-        	// Checks if pets should be protected from players
-            if (configuration.shouldProtectPetsFromOwners()) {
-
+            
+            // Checks if pets should be protected from players
+            if (this.configuration.shouldProtectPetsFromOwners()) {
+                
                 final Entity owner = ((TameableEntity) living).getOwner();
                 
                 // Check if it is the owner dealing the damage, and the owner is not sneaking.
                 if (owner != null && owner.getUniqueID().equals(source.getUniqueID()) && !source.isShiftKeyDown()) {
                     
-                	// If reflection is set to true, the player will be damaged when attacking their pets.
-                	if (configuration.shouldReflectDamage()) {
-                		
-                		owner.attackEntityFrom(DamageSource.GENERIC, amount);
-                	}
-                	
-                	return true;
+                    // If reflection is set to true, the player will be damaged when attacking
+                    // their
+                    // pets.
+                    if (this.configuration.shouldReflectDamage()) {
+                        
+                        owner.attackEntityFrom(DamageSource.GENERIC, amount);
+                    }
+                    
+                    return true;
                 }
             }
-
+            
             // Check if pets should be protected from pets with the same owner.
-            else if (configuration.shouldProtectPetsFromPets() && source instanceof TameableEntity) {
-
+            else if (this.configuration.shouldProtectPetsFromPets() && source instanceof TameableEntity) {
+                
                 final boolean sameOwner = ((TameableEntity) living).getOwnerId().equals(((TameableEntity) source).getOwnerId());
-
+                
                 if (sameOwner) {
-
-                	return true;
+                    
+                    return true;
                 }
             }
-        }
-
-        // Check if child mobs can be killed.
-        if (configuration.shouldProtectChildren() && living instanceof AgeableEntity && ((AgeableEntity) living).isChild() && !source.isShiftKeyDown()) {
-
-        	return true;
         }
         
-    	return false;
+        // Check if child mobs can be killed.
+        if (this.configuration.shouldProtectChildren() && living instanceof AgeableEntity && ((AgeableEntity) living).isChild() && !source.isShiftKeyDown()) {
+            
+            return true;
+        }
+        
+        return false;
     }
 }
