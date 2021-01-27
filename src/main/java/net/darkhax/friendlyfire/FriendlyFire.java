@@ -6,6 +6,8 @@ import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.entity.passive.horse.AbstractHorseEntity;
+import net.minecraft.entity.passive.horse.HorseEntity;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -108,10 +110,14 @@ public class FriendlyFire {
             }
         }
 
-        // Check if child mobs can be killed.
-        if (configuration.shouldProtectChildren() && living instanceof AgeableEntity && ((AgeableEntity) living).isChild() && !source.isSneaking()) {
+        if (configuration.shouldProtectPetsFromPets() && living instanceof AbstractHorseEntity && !source.isSneaking()) {
 
-        	return true;
+            final boolean sameOwner = source.getUniqueID().equals(((AbstractHorseEntity) living).getOwnerUniqueId());
+
+            if (sameOwner) {
+
+                return true;
+            }
         }
         
     	return false;
