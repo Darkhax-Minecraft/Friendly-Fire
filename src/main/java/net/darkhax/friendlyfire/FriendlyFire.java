@@ -8,12 +8,14 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import net.minecraft.entity.AgeableEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.passive.TameableEntity;
 import net.minecraft.entity.passive.horse.AbstractHorseEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.DamageSource;
@@ -31,6 +33,7 @@ public class FriendlyFire {
     
     public static final INamedTag<Item> BYPASS_PET = ItemTags.makeWrapperTag("friendlyfire:bypass_pet");
     public static final INamedTag<Item> BYPASS_ALL = ItemTags.makeWrapperTag("friendlyfire:bypass_all_protection");
+    public static final INamedTag<EntityType<?>> GENERAL_PROTECTION = EntityTypeTags.getTagById("friendlyfire:general_protection");
     
     private final Configuration configuration = new Configuration();
     
@@ -112,6 +115,12 @@ public class FriendlyFire {
         if (BYPASS_ALL.contains(heldItem.getItem())) {
             
             return false;
+        }
+        
+        // Mobs with general protection tag are almost always protected.
+        if (GENERAL_PROTECTION.contains(living.getType())) {
+            
+            return true;
         }
         
         // Gets the pet owner ID, will be null if not a pet mob.
