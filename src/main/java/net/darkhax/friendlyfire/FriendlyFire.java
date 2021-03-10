@@ -19,6 +19,7 @@ import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ITag.INamedTag;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -31,9 +32,9 @@ import net.minecraftforge.fml.network.FMLNetworkConstants;
 @Mod("friendlyfire")
 public class FriendlyFire {
     
-    public static final INamedTag<Item> BYPASS_PET = ItemTags.makeWrapperTag("friendlyfire:bypass_pet");
-    public static final INamedTag<Item> BYPASS_ALL = ItemTags.makeWrapperTag("friendlyfire:bypass_all_protection");
-    public static final INamedTag<EntityType<?>> GENERAL_PROTECTION = EntityTypeTags.getTagById("friendlyfire:general_protection");
+    public static final INamedTag<Item> BYPASS_PET = ItemTags.createOptional(new ResourceLocation("friendlyfire", "bypass_pet"));
+    public static final INamedTag<Item> BYPASS_ALL = ItemTags.createOptional(new ResourceLocation("friendlyfire", "bypass_all_protection"));
+    public static final INamedTag<EntityType<?>> GENERAL_PROTECTION = EntityTypeTags.createOptional(new ResourceLocation("friendlyfire", "general_protection"));
     
     private final Configuration configuration = new Configuration();
     
