@@ -21,7 +21,7 @@ import net.minecraftforge.fml.IExtensionPoint;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig.Type;
-import net.minecraftforge.fmllegacy.network.FMLNetworkConstants;
+import net.minecraftforge.network.NetworkConstants;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -37,7 +37,7 @@ public class FriendlyFire {
 
     public FriendlyFire() {
 
-        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> FMLNetworkConstants.IGNORESERVERONLY, (a, b) -> true));
+        ModLoadingContext.get().registerExtensionPoint(IExtensionPoint.DisplayTest.class, () -> new IExtensionPoint.DisplayTest(() -> NetworkConstants.IGNORESERVERONLY, (a, b) -> true));
         MinecraftForge.EVENT_BUS.addListener(this::onEntityAttack);
         MinecraftForge.EVENT_BUS.addListener(this::onEntityHurt);
         ModLoadingContext.get().registerConfig(Type.COMMON, this.configuration.getSpec());
