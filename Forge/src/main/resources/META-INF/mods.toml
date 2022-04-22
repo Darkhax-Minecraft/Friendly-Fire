@@ -16,4 +16,11 @@ authors = "${mod_author}"
 description = '''
 ${mod_description}
 '''
-itemIcon = "minecraft:bookshelf"
+itemIcon = "minecraft:bone"
+
+[[dependencies.${ mod_id }]]
+modId = "bookshelf"
+mandatory = true
+versionRange = "[13,)"
+ordering = "NONE"
+side = "BOTH"
