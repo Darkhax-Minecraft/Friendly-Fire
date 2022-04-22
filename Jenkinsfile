@@ -5,34 +5,35 @@ pipeline {
     agent any
 
     tools {
-        jdk "jdk-16.0.1+9"
+        jdk "jdk-17.0.1"
     }
     
     stages {
-    
-        stage('Clean') {
+        
+        stage('Setup') {
         
             steps {
             
-			    withCredentials([file(credentialsId: 'mod_build_secrets', variable: 'ORG_GRADLE_PROJECT_secretFile')]) {
-				
-                    echo 'Cleaning project workspace.'
-                    sh 'chmod +x gradlew'
-				    sh './gradlew clean'
-				}
+                echo 'Setup Project'
+                sh 'chmod +x gradlew'
+                sh './gradlew clean'
             }
         }
         
         stage('Build') {
         
-		    steps {
-			
-			    withCredentials([file(credentialsId: 'mod_build_secrets', variable: 'ORG_GRADLE_PROJECT_secretFile')]) {
-			
-			        echo 'Building project.'
-                    sh './gradlew build curseforge updateVersionTracker --stacktrace --info'
-			    }
-			}
+            steps {
+            
+                withCredentials([
+                    file(credentialsId: 'build_secrets', variable: 'ORG_GRADLE_PROJECT_secretFile'),
+                    file(credentialsId: 'java_keystore', variable: 'ORG_GRADLE_PROJECT_keyStore'),
+                    file(credentialsId: 'gpg_key', variable: 'ORG_GRADLE_PROJECT_pgpKeyRing')
+                ]) {
+            
+                    echo 'Building project.'
+                    sh './gradlew build publish publishCurseForge updateVersionTracker postTweet postDiscord --stacktrace --warn'
+                }
+            }
         }
     }
 }

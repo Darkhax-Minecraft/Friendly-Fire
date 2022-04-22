@@ -1,0 +1,115 @@
+package net.darkhax.friendlyfire;
+
+import net.darkhax.bookshelf.api.Services;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.AgeableMob;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.OwnableEntity;
+import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+
+import javax.annotation.Nullable;
+import java.io.File;
+import java.util.UUID;
+
+public class FriendlyFireCommon {
+
+    private static final TagKey<Item> BYPASS_PET = Services.TAGS.itemTag(new ResourceLocation("friendlyfire", "bypass_pet"));
+    private static final TagKey<Item> BYPASS_ALL = Services.TAGS.itemTag(new ResourceLocation("friendlyfire", "bypass_all_protection"));
+    private static final TagKey<EntityType<?>> GENERAL_PROTECTION = Services.TAGS.entityTag(new ResourceLocation("friendlyfire", "general_protection"));
+
+    private static final Config CONFIG = Config.load(new File(Services.PLATFORM.getConfigDirectory(), "friendlyfire.json"));
+
+    public static void init() {
+
+        Constants.LOG.debug("Protect children = {}", CONFIG.protectChildren);
+        Constants.LOG.debug("Protect pets from owner = {}", CONFIG.protectPetsFromOwner);
+        Constants.LOG.debug("Protect pets from pets = {}", CONFIG.protectPetsFromPets);
+        Constants.LOG.debug("Reflect damage = {}", CONFIG.reflectDamage);
+    }
+
+    public static boolean preventAttack(Entity target, DamageSource source, float amount) {
+
+        return source != null && preventAttack(target, source.getEntity(), amount);
+    }
+
+    public static boolean preventAttack(Entity target, Entity attacker, float amount) {
+
+        // Null targets or sources can not be protected. Sneaking will bypass this mod
+        // entirely.
+        if (target == null || attacker == null || attacker.isCrouching()) {
+
+            return false;
+        }
+
+        // The item used by the attacker.
+        final ItemStack heldItem = attacker instanceof LivingEntity attackerLiving ? attackerLiving.getMainHandItem() : ItemStack.EMPTY;
+
+        // Items in the bypass all tag will always cause damage.
+        if (heldItem.is(BYPASS_ALL)) {
+
+            return false;
+        }
+
+        // Mobs with general protection tag are almost always protected.
+        if (target.getType().is(GENERAL_PROTECTION)) {
+
+            return true;
+        }
+
+        // Gets the pet owner ID, will be null if not a pet mob.
+        final UUID ownerId = getOwner(target);
+
+        if (ownerId != null && !heldItem.is(BYPASS_PET)) {
+
+            // Protects owners from hurting their pets.
+            if (CONFIG.protectPetsFromOwner && ownerId.equals(attacker.getUUID())) {
+
+                // Reflection causes players to hurt themselves instead.
+                if (CONFIG.reflectDamage) {
+
+                    attacker.hurt(DamageSource.GENERIC, amount);
+                }
+
+                return true;
+            }
+
+            // Protect pets from pets with the same owner.
+            else if (CONFIG.protectPetsFromPets && ownerId.equals(getOwner(attacker))) {
+
+                return true;
+            }
+        }
+
+        // Check if child mobs can be killed.
+        if (CONFIG.protectChildren && !(target instanceof Enemy) && target instanceof AgeableMob agable && agable.isBaby() && !attacker.isCrouching()) {
+
+            return true;
+        }
+
+        return false;
+    }
+
+    @Nullable
+    private static UUID getOwner(Entity entity) {
+
+        if (entity instanceof OwnableEntity ownable) {
+
+            return ownable.getOwnerUUID();
+        }
+
+        // Thanks Mojang
+        if (entity instanceof AbstractHorse horse) {
+
+            return horse.getOwnerUUID();
+        }
+
+        return null;
+    }
+}
