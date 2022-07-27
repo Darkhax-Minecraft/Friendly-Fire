@@ -18,10 +18,10 @@ public class FriendlyFireForge {
 
     private static void onEntityAttack(LivingAttackEvent event) {
 
-        if (FriendlyFireCommon.preventAttack(event.getEntityLiving(), event.getSource(), event.getAmount())) {
+        if (FriendlyFireCommon.preventAttack(event.getEntity(), event.getSource(), event.getAmount())) {
 
             event.setCanceled(true);
-            event.getEntityLiving().setLastHurtByMob(null);
+            event.getEntity().setLastHurtByMob(null);
 
             if (event.getSource().getEntity() instanceof LivingEntity trueSource) {
 
@@ -32,11 +32,11 @@ public class FriendlyFireForge {
 
     private static void onEntityHurt(LivingHurtEvent event) {
 
-        if (FriendlyFireCommon.preventAttack(event.getEntityLiving(), event.getSource(), event.getAmount())) {
+        if (FriendlyFireCommon.preventAttack(event.getEntity(), event.getSource(), event.getAmount())) {
 
             event.setCanceled(true);
             event.setAmount(0f);
-            event.getEntityLiving().setLastHurtByMob(null);
+            event.getEntity().setLastHurtByMob(null);
 
             if (event.getSource().getEntity() instanceof LivingEntity trueSource) {
 
