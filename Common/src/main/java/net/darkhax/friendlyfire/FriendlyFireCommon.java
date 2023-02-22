@@ -1,7 +1,9 @@
 package net.darkhax.friendlyfire;
 
 import net.darkhax.bookshelf.api.Services;
+import net.minecraft.client.gui.screens.social.PlayerEntry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
@@ -11,6 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -23,6 +26,7 @@ public class FriendlyFireCommon {
     private static final TagKey<Item> BYPASS_PET = Services.TAGS.itemTag(new ResourceLocation("friendlyfire", "bypass_pet"));
     private static final TagKey<Item> BYPASS_ALL = Services.TAGS.itemTag(new ResourceLocation("friendlyfire", "bypass_all_protection"));
     private static final TagKey<EntityType<?>> GENERAL_PROTECTION = Services.TAGS.entityTag(new ResourceLocation("friendlyfire", "general_protection"));
+    private static final TagKey<EntityType<?>> PLAYER_PROTECTION = Services.TAGS.entityTag(new ResourceLocation("friendlyfire", "player_protection"));
 
     private static final Config CONFIG = Config.load(new File(Services.PLATFORM.getConfigDirectory(), "friendlyfire.json"));
 
@@ -59,6 +63,12 @@ public class FriendlyFireCommon {
 
         // Mobs with general protection tag are almost always protected.
         if (target.getType().is(GENERAL_PROTECTION)) {
+
+            return true;
+        }
+
+        // Mobs with player protection are protected from players.
+        if (attacker instanceof Player player) {
 
             return true;
         }
