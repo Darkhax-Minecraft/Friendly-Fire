@@ -1,7 +1,7 @@
 package net.darkhax.friendlyfire;
 
 import net.darkhax.bookshelf.api.Services;
-import net.minecraft.client.gui.screens.social.PlayerEntry;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
@@ -40,10 +40,18 @@ public class FriendlyFireCommon {
 
     public static boolean preventAttack(Entity target, DamageSource source, float amount) {
 
-        return source != null && preventAttack(target, source.getEntity(), amount);
+        final Entity attacker = source.getEntity();
+        final boolean preventDamage = source != null && isProtected(target, attacker, amount);
+
+        if (preventDamage && attacker instanceof ServerPlayer player) {
+
+            player.displayClientMessage(Component.translatable("notif.friendlyfire.protected", target.getName()), true);
+        }
+
+        return preventDamage;
     }
 
-    public static boolean preventAttack(Entity target, Entity attacker, float amount) {
+    private static boolean isProtected(Entity target, Entity attacker, float amount) {
 
         // Null targets or sources can not be protected. Sneaking will bypass this mod
         // entirely.
