@@ -1,7 +1,10 @@
 package net.darkhax.friendlyfire;
 
 import net.darkhax.bookshelf.api.Services;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.AgeableMob;
@@ -11,6 +14,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -23,6 +27,7 @@ public class FriendlyFireCommon {
     private static final TagKey<Item> BYPASS_PET = Services.TAGS.itemTag(new ResourceLocation("friendlyfire", "bypass_pet"));
     private static final TagKey<Item> BYPASS_ALL = Services.TAGS.itemTag(new ResourceLocation("friendlyfire", "bypass_all_protection"));
     private static final TagKey<EntityType<?>> GENERAL_PROTECTION = Services.TAGS.entityTag(new ResourceLocation("friendlyfire", "general_protection"));
+    private static final TagKey<EntityType<?>> PLAYER_PROTECTION = Services.TAGS.entityTag(new ResourceLocation("friendlyfire", "player_protection"));
 
     private static final Config CONFIG = Config.load(new File(Services.PLATFORM.getConfigDirectory(), "friendlyfire.json"));
 
@@ -36,10 +41,18 @@ public class FriendlyFireCommon {
 
     public static boolean preventAttack(Entity target, DamageSource source, float amount) {
 
-        return source != null && preventAttack(target, source.getEntity(), amount);
+        final Entity attacker = source.getEntity();
+        final boolean preventDamage = source != null && isProtected(target, attacker, amount);
+
+        if (preventDamage && attacker instanceof ServerPlayer player) {
+
+            player.displayClientMessage(new TranslatableComponent("notif.friendlyfire.protected", target.getName()), true);
+        }
+
+        return preventDamage;
     }
 
-    public static boolean preventAttack(Entity target, Entity attacker, float amount) {
+    private static boolean isProtected(Entity target, Entity attacker, float amount) {
 
         // Null targets or sources can not be protected. Sneaking will bypass this mod
         // entirely.
@@ -59,6 +72,12 @@ public class FriendlyFireCommon {
 
         // Mobs with general protection tag are almost always protected.
         if (target.getType().is(GENERAL_PROTECTION)) {
+
+            return true;
+        }
+
+        // Mobs with player protection are protected from players.
+        if (attacker instanceof Player player && target.getType().is(PLAYER_PROTECTION)) {
 
             return true;
         }
