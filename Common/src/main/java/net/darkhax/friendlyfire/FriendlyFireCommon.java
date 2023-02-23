@@ -76,7 +76,7 @@ public class FriendlyFireCommon {
         }
 
         // Mobs with player protection are protected from players.
-        if (attacker instanceof Player player) {
+        if (attacker instanceof Player player && target.getType().is(PLAYER_PROTECTION)) {
 
             return true;
         }
