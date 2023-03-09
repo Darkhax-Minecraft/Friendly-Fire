@@ -24,6 +24,9 @@ public class Config {
     @Expose
     public boolean reflectDamage = false;
 
+    @Expose
+    public boolean displayHitWarning = true;
+
     public static Config load(File configFile) {
 
         Config config = new Config();

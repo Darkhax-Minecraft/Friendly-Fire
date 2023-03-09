@@ -43,7 +43,7 @@ public class FriendlyFireCommon {
         final Entity attacker = source.getEntity();
         final boolean preventDamage = source != null && isProtected(target, attacker, amount);
 
-        if (preventDamage && attacker instanceof ServerPlayer player) {
+        if (preventDamage && attacker instanceof ServerPlayer player && CONFIG.displayHitWarning) {
 
             player.displayClientMessage(Component.translatable("notif.friendlyfire.protected", target.getName()), true);
         }
