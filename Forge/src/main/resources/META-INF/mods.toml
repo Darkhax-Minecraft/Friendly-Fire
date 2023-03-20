@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[43,)"
+loaderVersion = "[45,)"
 license = "${mod_license}"
 issueTrackerURL = "${mod_issues}"
 logoFile = "logo.png"
@@ -22,6 +22,6 @@ itemIcon = "minecraft:bone"
 [[dependencies.${ mod_id }]]
 modId = "bookshelf"
 mandatory = true
-versionRange = "[16,)"
+versionRange = "[18,)"
 ordering = "NONE"
 side = "BOTH"
