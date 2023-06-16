@@ -92,7 +92,7 @@ public class FriendlyFireCommon {
                 // Reflection causes players to hurt themselves instead.
                 if (CONFIG.reflectDamage) {
 
-                    attacker.hurt(attacker.level.damageSources().generic(), amount);
+                    attacker.hurt(attacker.level().damageSources().generic(), amount);
                 }
 
                 return true;
