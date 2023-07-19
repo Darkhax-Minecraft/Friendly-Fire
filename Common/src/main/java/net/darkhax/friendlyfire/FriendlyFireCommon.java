@@ -41,6 +41,7 @@ public class FriendlyFireCommon {
         Constants.LOG.debug("Protect children = {}", CONFIG.protectChildren);
         Constants.LOG.debug("Protect pets from owner = {}", CONFIG.protectPetsFromOwner);
         Constants.LOG.debug("Protect pets from pets = {}", CONFIG.protectPetsFromPets);
+        Constants.LOG.debug("Protect pets from teammates = {}", CONFIG.protectPetsFromTeammates);
         Constants.LOG.debug("Reflect damage = {}", CONFIG.reflectDamage);
     }
 

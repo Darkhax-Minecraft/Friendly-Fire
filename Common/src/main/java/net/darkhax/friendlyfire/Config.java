@@ -19,6 +19,9 @@ public class Config {
     public boolean protectPetsFromPets = true;
 
     @Expose
+    public boolean protectPetsFromTeammates = true;
+
+    @Expose
     public boolean protectChildren = true;
 
     @Expose
@@ -26,9 +29,6 @@ public class Config {
 
     @Expose
     public boolean displayHitWarning = true;
-
-    @Expose
-    public boolean protectPetsFromTeammates = true;
 
     public static Config load(File configFile) {
 
