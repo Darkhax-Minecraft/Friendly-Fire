@@ -4,6 +4,7 @@ import net.darkhax.bookshelf.api.Services;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
@@ -15,12 +16,16 @@ import net.minecraft.world.entity.OwnableEntity;
 import net.minecraft.world.entity.animal.horse.AbstractHorse;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.scores.Team;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import com.mojang.authlib.GameProfile;
 
 import javax.annotation.Nullable;
 import java.io.File;
 import java.util.UUID;
+import java.util.Optional;
+import java.util.Collection;
 
 public class FriendlyFireCommon {
 
@@ -88,8 +93,10 @@ public class FriendlyFireCommon {
         if (ownerId != null && !heldItem.is(BYPASS_PET)) {
 
             // Protects owners from hurting their pets.
-            if (CONFIG.protectPetsFromOwner && ownerId.equals(attacker.getUUID())) {
-
+            if (CONFIG.protectPetsFromOwner && ownerId.equals(attacker.getUUID())
+                // Protect pets from teammates
+                || isTeamProtected(attacker, target, ownerId)
+            ) {
                 // Reflection causes players to hurt themselves instead.
                 if (CONFIG.reflectDamage) {
 
@@ -130,5 +137,27 @@ public class FriendlyFireCommon {
         }
 
         return null;
+    }
+
+    private static boolean isTeamProtected(Entity attacker, Entity target, UUID ownerId) {
+        if (!CONFIG.protectPetsFromTeammates)
+            return false;
+
+        Team team = attacker.getTeam();
+        if (team == null || team.isAllowFriendlyFire())
+            return false;
+
+        Collection<String> teammates = team.getPlayers();
+        if (teammates.contains(ownerId.toString()))
+            return true;
+
+        MinecraftServer server = attacker.getServer();
+        if (server != null) {
+            Optional<GameProfile> targetOwner = server.getProfileCache().get(ownerId);
+            if (targetOwner.isPresent())
+                return teammates.contains(targetOwner.get().getName());
+        }
+
+        return false;
     }
 }
