@@ -94,9 +94,9 @@ public class FriendlyFireCommon {
         if (ownerId != null && !heldItem.is(BYPASS_PET)) {
 
             // Protects owners from hurting their pets.
-            if (CONFIG.protectPetsFromOwner && ownerId.equals(attacker.getUUID())
+            if (ownerId.equals(attacker.getUUID()) ? CONFIG.protectPetsFromOwner
                 // Protect pets from teammates
-                || isTeamProtected(attacker, target, ownerId)
+                : attacker instanceof Player && isTeamProtected(attacker.getTeam(), ownerId, attacker.getServer())
             ) {
                 // Reflection causes players to hurt themselves instead.
                 if (CONFIG.reflectDamage) {
@@ -107,10 +107,24 @@ public class FriendlyFireCommon {
                 return true;
             }
 
-            // Protect pets from pets with the same owner.
-            else if (CONFIG.protectPetsFromPets && ownerId.equals(getOwner(attacker))) {
+            else if (CONFIG.protectPetsFromPets) {
 
-                return true;
+                UUID attackersOwner = getOwner(attacker);
+
+                // Protect pets from pets with the same owner.
+                if (ownerId.equals(attackersOwner))
+                    return true;
+
+                // Protect pets from teammates' pets
+                MinecraftServer server = attacker.getServer();
+                if (attackersOwner != null && server != null
+                    && isTeamProtected(
+                        server.getScoreboard().getPlayersTeam(playerNameFromUUID(attackersOwner, server)),
+                        ownerId,
+                        server
+                    )
+                )
+                    return true;
             }
         }
 
@@ -140,25 +154,26 @@ public class FriendlyFireCommon {
         return null;
     }
 
-    private static boolean isTeamProtected(Entity attacker, Entity target, UUID ownerId) {
+    private static boolean isTeamProtected(Team attackerTeam, UUID targetOwnerId, MinecraftServer server) {
         if (!CONFIG.protectPetsFromTeammates)
             return false;
 
-        Team team = attacker.getTeam();
-        if (team == null || team.isAllowFriendlyFire())
+        if (attackerTeam == null || attackerTeam.isAllowFriendlyFire())
             return false;
 
-        Collection<String> teammates = team.getPlayers();
-        if (teammates.contains(ownerId.toString()))
-            return true;
+        Collection<String> teammates = attackerTeam.getPlayers();
+        return teammates.contains(targetOwnerId.toString())
+               || teammates.contains(playerNameFromUUID(targetOwnerId, server));
+    }
 
-        MinecraftServer server = attacker.getServer();
+    @Nullable
+    private static String playerNameFromUUID(UUID id, MinecraftServer server) {
         if (server != null) {
-            Optional<GameProfile> targetOwner = server.getProfileCache().get(ownerId);
-            if (targetOwner.isPresent())
-                return teammates.contains(targetOwner.get().getName());
+            Optional<GameProfile> profile = server.getProfileCache().get(id);
+            if (profile.isPresent())
+                return profile.get().getName();
         }
 
-        return false;
+        return null;
     }
 }
