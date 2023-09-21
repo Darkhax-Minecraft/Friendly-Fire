@@ -27,6 +27,7 @@ public class FriendlyFireCommon {
     private static final TagKey<Item> BYPASS_ALL = Services.TAGS.itemTag(new ResourceLocation("friendlyfire", "bypass_all_protection"));
     private static final TagKey<EntityType<?>> GENERAL_PROTECTION = Services.TAGS.entityTag(new ResourceLocation("friendlyfire", "general_protection"));
     private static final TagKey<EntityType<?>> PLAYER_PROTECTION = Services.TAGS.entityTag(new ResourceLocation("friendlyfire", "player_protection"));
+    private static final TagKey<EntityType<?>> BYPASSED_PROTECTION = Services.TAGS.entityTag(new ResourceLocation("friendlyfire", "bypassed_entity_types"));
 
     private static final Config CONFIG = Config.load(new File(Services.PLATFORM.getConfigDirectory(), "friendlyfire.json"));
 
@@ -52,6 +53,11 @@ public class FriendlyFireCommon {
     }
 
     private static boolean isProtected(Entity target, Entity attacker, float amount) {
+
+        if (target.getType().is(BYPASSED_PROTECTION)) {
+
+            return false;
+        }
 
         // Null targets or sources can not be protected. Sneaking will bypass this mod
         // entirely.
