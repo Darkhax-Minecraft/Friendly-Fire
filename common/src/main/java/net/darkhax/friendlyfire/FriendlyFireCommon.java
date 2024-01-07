@@ -1,6 +1,7 @@
 package net.darkhax.friendlyfire;
 
 import net.darkhax.bookshelf.api.Services;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,11 +24,11 @@ import java.util.UUID;
 
 public class FriendlyFireCommon {
 
-    private static final TagKey<Item> BYPASS_PET = Services.TAGS.itemTag(new ResourceLocation("friendlyfire", "bypass_pet"));
-    private static final TagKey<Item> BYPASS_ALL = Services.TAGS.itemTag(new ResourceLocation("friendlyfire", "bypass_all_protection"));
-    private static final TagKey<EntityType<?>> GENERAL_PROTECTION = Services.TAGS.entityTag(new ResourceLocation("friendlyfire", "general_protection"));
-    private static final TagKey<EntityType<?>> PLAYER_PROTECTION = Services.TAGS.entityTag(new ResourceLocation("friendlyfire", "player_protection"));
-    private static final TagKey<EntityType<?>> BYPASSED_PROTECTION = Services.TAGS.entityTag(new ResourceLocation("friendlyfire", "bypassed_entity_types"));
+    private static final TagKey<Item> BYPASS_PET = TagKey.create(Registries.ITEM, new ResourceLocation("friendlyfire", "bypass_pet"));
+    private static final TagKey<Item> BYPASS_ALL = TagKey.create(Registries.ITEM, new ResourceLocation("friendlyfire", "bypass_all_protection"));
+    private static final TagKey<EntityType<?>> GENERAL_PROTECTION = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("friendlyfire", "general_protection"));
+    private static final TagKey<EntityType<?>> PLAYER_PROTECTION = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("friendlyfire", "player_protection"));
+    private static final TagKey<EntityType<?>> BYPASSED_PROTECTION = TagKey.create(Registries.ENTITY_TYPE, new ResourceLocation("friendlyfire", "bypassed_entity_types"));
 
     private static final Config CONFIG = Config.load(new File(Services.PLATFORM.getConfigDirectory(), "friendlyfire.json"));
 
