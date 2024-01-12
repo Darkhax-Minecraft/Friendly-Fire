@@ -135,6 +135,12 @@ processResources {
 
 jar.finalizedBy('reobfJar')
 
+sourceSets.each {
+    def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+    it.output.resourcesDir = dir
+    it.java.destinationDirectory = dir
+}
+
 // -- Mixin Support
 if (project.ext.mixin_enabled) {
 
