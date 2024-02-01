@@ -113,7 +113,7 @@ public class FriendlyFireCommon {
         }
 
         // Check if child mobs can be killed.
-        if (CONFIG.protectChildren && !(target instanceof Enemy) && target instanceof AgeableMob agable && agable.isBaby() && !attacker.isCrouching()) {
+        if (CONFIG.protectChildren && attacker instanceof Player && !(target instanceof Enemy) && target instanceof AgeableMob agable && agable.isBaby() && !attacker.isCrouching()) {
 
             return true;
         }
