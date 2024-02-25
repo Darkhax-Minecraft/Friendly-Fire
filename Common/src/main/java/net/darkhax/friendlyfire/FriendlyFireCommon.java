@@ -2,9 +2,8 @@ package net.darkhax.friendlyfire;
 
 import net.darkhax.bookshelf.api.Services;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
@@ -52,7 +51,7 @@ public class FriendlyFireCommon {
 
         if (preventDamage && attacker instanceof ServerPlayer player && CONFIG.displayHitWarning) {
 
-            player.displayClientMessage(new TranslatableComponent("notif.friendlyfire.protected", target.getName()), true);
+            player.displayClientMessage(Component.translatable("notif.friendlyfire.protected", target.getName()), true);
         }
 
         return preventDamage;

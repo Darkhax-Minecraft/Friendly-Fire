@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[40,)"
+loaderVersion = "[43,)"
 license = "${mod_license}"
 issueTrackerURL = "${mod_issues}"
 logoFile = "logo.png"
@@ -7,6 +7,7 @@ logoBlur = false
 
 [[mods]]
 modId = "${mod_id}"
+displayTest="IGNORE_ALL_VERSION"
 updateJSONURL = "https://updates.blamejared.com/get?n=${mod_id}&gv=${minecraft_version}"
 version = "${file.jarVersion}"
 displayName = "${mod_name}"
@@ -21,6 +22,6 @@ itemIcon = "minecraft:bone"
 [[dependencies.${ mod_id }]]
 modId = "bookshelf"
 mandatory = true
-versionRange = "[13,)"
+versionRange = "[16,)"
 ordering = "NONE"
 side = "BOTH"
