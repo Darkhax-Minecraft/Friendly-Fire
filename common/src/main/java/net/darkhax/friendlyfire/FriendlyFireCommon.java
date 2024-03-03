@@ -1,9 +1,11 @@
 package net.darkhax.friendlyfire;
 
+import com.mojang.authlib.GameProfile;
 import net.darkhax.bookshelf.api.Services;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
@@ -17,6 +19,7 @@ import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.scores.PlayerTeam;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -53,16 +56,16 @@ public class FriendlyFireCommon {
         return preventDamage;
     }
 
-    private static boolean isProtected(Entity target, Entity attacker, float amount) {
+    private static boolean isProtected(Entity victim, Entity attacker, float amount) {
 
-        if (target.getType().is(BYPASSED_PROTECTION)) {
+        if (victim.getType().is(BYPASSED_PROTECTION)) {
 
             return false;
         }
 
         // Null targets or sources can not be protected. Sneaking will bypass this mod
         // entirely.
-        if (target == null || attacker == null || attacker.isCrouching()) {
+        if (victim == null || attacker == null || attacker.isCrouching()) {
 
             return false;
         }
@@ -77,19 +80,19 @@ public class FriendlyFireCommon {
         }
 
         // Mobs with general protection tag are almost always protected.
-        if (target.getType().is(GENERAL_PROTECTION)) {
+        if (victim.getType().is(GENERAL_PROTECTION)) {
 
             return true;
         }
 
         // Mobs with player protection are protected from players.
-        if (attacker instanceof Player player && target.getType().is(PLAYER_PROTECTION)) {
+        if (attacker instanceof Player player && victim.getType().is(PLAYER_PROTECTION)) {
 
             return true;
         }
 
         // Gets the pet owner ID, will be null if not a pet mob.
-        final UUID ownerId = getOwner(target);
+        final UUID ownerId = getOwner(victim);
 
         if (ownerId != null && !heldItem.is(BYPASS_PET)) {
 
@@ -112,13 +115,51 @@ public class FriendlyFireCommon {
             }
         }
 
+        if (CONFIG.protectTeamMembers && isOnProtectedTeam(attacker, victim)) {
+
+            return true;
+        }
+
         // Check if child mobs can be killed.
-        if (CONFIG.protectChildren && attacker instanceof Player && !(target instanceof Enemy) && target instanceof AgeableMob agable && agable.isBaby() && !attacker.isCrouching()) {
+        if (CONFIG.protectChildren && attacker instanceof Player && !(victim instanceof Enemy) && victim instanceof AgeableMob agable && agable.isBaby() && !attacker.isCrouching()) {
 
             return true;
         }
 
         return false;
+    }
+
+    private static boolean isOnProtectedTeam(Entity attacker, Entity victim) {
+
+        final PlayerTeam attackerTeam = getEffectiveTeam(attacker);
+        final PlayerTeam victimTeam = getEffectiveTeam(victim);
+        return attackerTeam != null && victimTeam != null && (attackerTeam.isAlliedTo(victimTeam) && victimTeam.isAlliedTo(attackerTeam)) && (!CONFIG.respectTeamRules || !victimTeam.isAllowFriendlyFire());
+    }
+
+    @Nullable
+    private static PlayerTeam getEffectiveTeam(Entity entity) {
+
+        final PlayerTeam directTeam = entity.getTeam();
+
+        if (directTeam == null && entity instanceof OwnableEntity ownable && ownable.getOwnerUUID() != null) {
+
+            if (ownable.getOwner() != null) {
+
+                return ownable.getOwner().getTeam();
+            }
+
+            if (entity.level() instanceof ServerLevel server) {
+
+                final GameProfile fetchResult = server.getServer().getProfileCache().get(ownable.getOwnerUUID()).orElse(null);
+
+                if (fetchResult != null) {
+
+                    return entity.level().getScoreboard().getPlayersTeam(fetchResult.getName());
+                }
+            }
+        }
+
+        return directTeam;
     }
 
     @Nullable

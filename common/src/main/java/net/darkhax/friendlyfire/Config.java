@@ -27,6 +27,12 @@ public class Config {
     @Expose
     public boolean displayHitWarning = true;
 
+    @Expose
+    public boolean protectTeamMembers = true;
+
+    @Expose
+    public boolean respectTeamRules = false;
+
     public static Config load(File configFile) {
 
         Config config = new Config();
