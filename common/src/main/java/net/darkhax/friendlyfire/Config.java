@@ -27,6 +27,9 @@ public class Config {
     @Expose
     public boolean displayHitWarning = true;
 
+    @Expose
+    public boolean crouchBypassesProtection = true;
+
     public static Config load(File configFile) {
 
         Config config = new Config();

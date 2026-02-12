@@ -61,8 +61,7 @@ public class FriendlyFireCommon {
 
         // Null targets or sources can not be protected. Sneaking will bypass this mod
         // entirely.
-        if (target == null || attacker == null || attacker.isCrouching()) {
-
+        if (target == null || attacker == null || (CONFIG.crouchBypassesProtection && attacker.isCrouching())) {
             return false;
         }
 
