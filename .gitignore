@@ -1,23 +1,16 @@
-# eclipse
-bin
-*.launch
-.settings
-.metadata
-.classpath
-.project
+## Idea ##
+.idea/
+build/
 
-# idea
-out
-*.ipr
-*.iws
-*.iml
-.idea
+## Gradle ##
+.gradle/
 
-# gradle
-build
-.gradle
+## Common ##
+common/out
 
-# other
-eclipse
-run
-runs
+## Fabric ##
+fabric/out
+fabric/runs
+
+## NeoForge ##
+neoforge/run

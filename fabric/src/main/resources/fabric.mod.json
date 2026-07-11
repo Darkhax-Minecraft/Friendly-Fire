@@ -1,46 +1,45 @@
 {
   "schemaVersion": 1,
-  "id": "${mod_id}",
-  "version": "${version}",
-  "name": "${mod_name}",
-  "description": "${mod_description}",
+  "id": "friendlyfire",
+  "version": "26.1.2.0",
+  "name": "FriendlyFire",
+  "description": "Avoid hurting your pets and frends!",
   "authors": [
-    "${mod_author}"
+    "Darkhax"
   ],
   "contributors": [
     "This project is made possible with Patreon support from players like you. Thank you!",
-    "${mod_supporters}"
+    "lothrazar, techsquirrel, Tobias Ward, noobanidus"
   ],
   "contact": {
-    "homepage": "${mod_homepage}",
-    "sources": "${mod_source}",
-    "issues": "${mod_issues}"
+    "sources": "https://github.com/Darkhax-Minecraft/Friendly-Fire",
+    "issues": "https://github.com/Darkhax-Minecraft/Friendly-Fire/issues",
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/friendly-fire"
   },
-  "icon": "logo.png",
-  "license": "${mod_license}",
+  "license": "LGPL V2.1",
+  "icon": "logo_friendlyfire.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.darkhax.friendlyfire.FriendlyFireFabric"
+      "net.darkhax.friendlyfire.fabric.FriendlyFireFabric"
     ]
   },
   "mixins": [
-    "${mod_id}.fabric.mixins.json"
+    "friendlyfire.common.mixins.json",
+    "friendlyfire.fabric.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.21",
-    "fabric": "*",
-    "minecraft": "${minecraft_version}",
-    "java": ">=17",
-    "bookshelf": ">=21"
+    "fabricloader": ">=0.18.6",
+    "fabric-api": "*",
+    "minecraft": ">=26.1",
+    "java": ">=25",
+    "prickle": "*"
   },
   "custom": {
     "modmenu": {
       "links": {
-        "modmenu.twitter": "${mod_twitter}",
-        "modmenu.discord": "${mod_discord}",
-        "modmenu.curseforge": "${mod_homepage}",
-        "modmenu.patreon": "${patreon.campaignUrlTracked}"
+        "modmenu.curseforge": "https://www.curseforge.com/minecraft/mc-mods/friendly-fire",
+        "modmenu.modrinth": "https://modrinth.com/mod/friendly-fire"
       }
     }
   }

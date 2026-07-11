@@ -1,0 +1,43 @@
+modLoader = "javafml"
+license = "LGPL V2.1"
+issueTrackerURL = "https://github.com/Darkhax-Minecraft/Friendly-Fire/issues"
+
+[[mods]]
+modId = "friendlyfire"
+version = "26.1.2.0"
+displayName = "FriendlyFire"
+updateJSONURL = "https://updates.blamejared.com/get?n=friendlyfire&gv=26.1.2&ml=neoforge"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/friendly-fire"
+logoFile = "logo_friendlyfire.png"
+logoBlur = false
+credits = "This project is made possible with Patreon support from players like you. Thank you! lothrazar, techsquirrel, Tobias Ward, noobanidus"
+authors = "Darkhax"
+description = "Avoid hurting your pets and frends!"
+
+[[mixins]]
+config = "friendlyfire.common.mixins.json"
+
+[[mixins]]
+config = "friendlyfire.neoforge.mixins.json"
+
+[[dependencies.friendlyfire]]
+modId = "minecraft"
+type = "required"
+versionRange = "26.1"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.friendlyfire]]
+modId = "neoforge"
+type = "required"
+versionRange = "[26.1.0.1-beta,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.friendlyfire]]
+modId = "prickle"
+type = "required"
+versionRange = "[0,)"
+ordering = "NONE"
+side = "BOTH"
+

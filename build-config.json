@@ -1,0 +1,44 @@
+{
+  "mod": {
+    "name": "FriendlyFire",
+    "group": "net.darkhax.friendlyfire",
+    "authors": [
+      "Darkhax"
+    ],
+    "id": "friendlyfire",
+    "license": "LGPL V2.1",
+    "description": "Avoid hurting your pets and frends!",
+    "repo": "https://github.com/Darkhax-Minecraft/Friendly-Fire",
+    "client": false
+  },
+  "curseforge": {
+    "slug": "friendly-fire",
+    "id": "255105"
+  },
+  "modrinth": {
+    "slug": "friendly-fire",
+    "id": "FTaA4pRW"
+  },
+  "dependencies": [
+    {
+      "name": "Prickle",
+      "type": "required",
+      "mod_id": {
+        "id": "prickle"
+      },
+      "maven": {
+        "common": "net.darkhax.pricklemc:prickle-common-26.1.2:26.1.2.5",
+        "neoforge": "net.darkhax.pricklemc:prickle-neoforge-26.1.2:26.1.2.5",
+        "fabric": "net.darkhax.pricklemc:prickle-fabric-26.1.2:26.1.2.5"
+      },
+      "curseforge": {
+        "slug": "prickle",
+        "id": "1023259"
+      },
+      "modrinth": {
+        "slug": "prickle",
+        "id": "aaRl8GiW"
+      }
+    }
+  ]
+}
