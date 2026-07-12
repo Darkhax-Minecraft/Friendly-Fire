@@ -4,9 +4,9 @@ issueTrackerURL = "https://github.com/Darkhax-Minecraft/Friendly-Fire/issues"
 
 [[mods]]
 modId = "friendlyfire"
-version = "26.1.2.0"
+version = "26.2.0.0"
 displayName = "FriendlyFire"
-updateJSONURL = "https://updates.blamejared.com/get?n=friendlyfire&gv=26.1.2&ml=neoforge"
+updateJSONURL = "https://updates.blamejared.com/get?n=friendlyfire&gv=26.2&ml=neoforge"
 displayURL = "https://www.curseforge.com/minecraft/mc-mods/friendly-fire"
 logoFile = "logo_friendlyfire.png"
 logoBlur = false
@@ -23,14 +23,14 @@ config = "friendlyfire.neoforge.mixins.json"
 [[dependencies.friendlyfire]]
 modId = "minecraft"
 type = "required"
-versionRange = "26.1"
+versionRange = "26.2"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.friendlyfire]]
 modId = "neoforge"
 type = "required"
-versionRange = "[26.1.0.1-beta,)"
+versionRange = "[26.2.0.8-beta,)"
 ordering = "NONE"
 side = "BOTH"
 

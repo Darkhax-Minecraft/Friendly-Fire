@@ -27,9 +27,9 @@
         "id": "prickle"
       },
       "maven": {
-        "common": "net.darkhax.pricklemc:prickle-common-26.1.2:26.1.2.5",
-        "neoforge": "net.darkhax.pricklemc:prickle-neoforge-26.1.2:26.1.2.5",
-        "fabric": "net.darkhax.pricklemc:prickle-fabric-26.1.2:26.1.2.5"
+        "common": "net.darkhax.pricklemc:prickle-common-26.2:26.2.0.3",
+        "neoforge": "net.darkhax.pricklemc:prickle-neoforge-26.2:26.2.0.3",
+        "fabric": "net.darkhax.pricklemc:prickle-fabric-26.2:26.2.0.3"
       },
       "curseforge": {
         "slug": "prickle",
